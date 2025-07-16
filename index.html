@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Trendyol Kar Paneli</title>
+</head>
+<body>
+  <h2>🔐 Trendyol API Bilgileri</h2>
+  <form id="panelForm">
+    <input type="text" id="apiKey" placeholder="API Key" required><br><br>
+    <input type="text" id="apiSecret" placeholder="API Secret" required><br><br>
+    <input type="text" id="supplierId" placeholder="Supplier ID" required><br><br>
+    <label>Başlangıç Tarihi: <input type="date" id="startDate" required></label><br><br>
+    <label>Bitiş Tarihi: <input type="date" id="endDate" required></label><br><br>
+    <button type="submit">Excel Oluştur</button>
+  </form>
+  <div id="status"></div>
+  <script>
+    document.getElementById("panelForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      document.getElementById("status").innerText = "⏳ İşleniyor...";
+      const res = await fetch("http://localhost:3000/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          apiKey: document.getElementById("apiKey").value,
+          apiSecret: document.getElementById("apiSecret").value,
+          supplierId: document.getElementById("supplierId").value,
+          startDate: document.getElementById("startDate").value,
+          endDate: document.getElementById("endDate").value,
+        }),
+      });
+      if (res.ok) {
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "kar_hesaplama.xlsx";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        document.getElementById("status").innerText = "✅ Excel indirildi";
+      } else {
+        document.getElementById("status").innerText = "❌ Hata oluştu";
+      }
+    });
+  </script>
+</body>
+</html>
