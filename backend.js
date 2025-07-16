@@ -31,7 +31,8 @@ app.post("/generate", async (req, res) => {
 
   try {
     while (page < totalPages) {
-      const url = \`https://api.trendyol.com/sapigw/suppliers/\${supplierId}/orders?startDate=\${start}&endDate=\${endT}&page=\${page}&size=\${size}\`;
+      const url = `https://api.trendyol.com/sapigw/suppliers/${supplierId}/orders?startDate=${start}&endDate=${endT}&page=${page}&size=${size}`;
+
       const response = await axios.get(url, {
         headers: { Authorization: \`Basic \${auth}\` }
       });
